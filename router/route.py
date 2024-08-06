@@ -1,10 +1,5 @@
 import os
 
-os.environ["OPENAI_API_KEY"] = "sk-proj-XpsMgTpshWkxnunqn3ceT3BlbkFJhUbwD1rTw0V2tLRKQJdb"
-os.environ["GROQ_API_KEY"] = "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"
-# Replace with your model provider, we use Anyscale's Mixtral here.
-os.environ["ANYSCALE_API_KEY"] = "!24124"
-
 from routellm.controller import Controller
 
 client = Controller(
