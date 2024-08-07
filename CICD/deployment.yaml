@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synthetiq-backend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: synthetiq-backend
+  template:
+    metadata:
+      labels:
+        app: synthetiq-backend
+    spec:
+      containers:
+      - name: synthetiq-backend
+        image: your-repo/synthetiq-backend:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: synthetiq-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: synthetiq-frontend
+  template:
+    metadata:
+      labels:
+        app: synthetiq-frontend
+    spec:
+      containers:
+      - name: synthetiq-frontend
+        image: your-repo/synthetiq-frontend:latest
+        ports:
+        - containerPort: 3000

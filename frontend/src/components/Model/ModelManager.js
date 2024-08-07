@@ -1,102 +1,52 @@
-import React from 'react';
-import { Box, Button, TextField, Typography, InputLabel, FormControl, Select, MenuItem } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import useModelManager from '../../hooks/useModelManager';
+import React, { useState, useEffect } from 'react';
+import Select from 'react-select';
+import useModelManager from './useModelManager';
+import { useHistory } from 'react-router-dom';
 
 const ModelManager = () => {
-    const {
-        modelName,
-        setModelName,
-        apiEndpoints,
-        apiKey,
-        setApiKey,
-        description,
-        setDescription,
-        baseModel,
-        setbaseModel,
-        baseModels,
-        endpointTypes,
-        handleAddEndpoint,
-        handleEndpointChange,
-        handleSave,
-        error
-    } = useModelManager();
+    const [models, setModels] = useState([]);
+    const [selectedModel, setSelectedModel] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const history = useHistory();
+    const { fetchModels } = useModelManager();
+
+    useEffect(() => {
+        const loadModels = async () => {
+            try {
+                const fetchedModels = await fetchModels();
+                setModels(fetchedModels);
+            } catch (err) {
+                setError('Failed to load models.');
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadModels();
+    }, [fetchModels]);
+
+    const handleAddNewModel = () => {
+        history.push('/model-search');
+    };
+
+    const handleChange = (selectedOption) => {
+        setSelectedModel(selectedOption);
+    };
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom>Model Manager</Typography>
-            {error && <Typography color="error">{String(error)}</Typography>}
-            <TextField
-                label="Model Name"
-                value={modelName}
-                onChange={(e) => setModelName(e.target.value)}
-                fullWidth
-                margin="normal"
+        <div>
+            <h2>Model Manager</h2>
+            {loading && <p>Loading models...</p>}
+            {error && <p>{error}</p>}
+            <Select
+                options={models.map(model => ({ value: model.id, label: `${model.name} - ${model.description}` }))}
+                onChange={handleChange}
+                placeholder="Select a model"
+                isClearable
+                value={selectedModel ? { value: selectedModel.value, label: selectedModel.label } : null}
             />
-             <FormControl fullWidth margin="normal">
-                <InputLabel>Model Type</InputLabel>
-                <Select
-                    value={baseModel}
-                    onChange={(e) => setbaseModel(e.target.value)}
-                >
-                    {baseModels.map((type) => (
-                        <MenuItem key={type} value={type}>
-                            {type}
-                        </MenuItem>
-                    ))}
-                </Select>
-            </FormControl>
-            {apiEndpoints.map((endpoint, index) => (
-                <Box key={index} sx={{ mt: 2 }}>
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>API Endpoint Type (Modality)</InputLabel>
-                        <Select
-                            value={endpoint.endpointType}
-                            onChange={(e) => handleEndpointChange(index, 'endpointType', e.target.value)}
-                        >
-                            {endpointTypes.map((type) => (
-                                <MenuItem key={type.type} value={type.type}>
-                                    {type.type}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                    <TextField
-                        label="API Endpoint URL"
-                        value={endpoint.endpointURL}
-                        onChange={(e) => handleEndpointChange(index, 'endpointURL', e.target.value)}
-                        fullWidth
-                        margin="normal"
-                    />
-                </Box>
-            ))}
-            <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={handleAddEndpoint}
-                sx={{ mt: 2 }}
-            >
-                Add API Endpoint
-            </Button>
-            <TextField
-                label="API Key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                fullWidth
-                margin="normal"
-                type="password"
-            />
-            <TextField
-                label="Description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                fullWidth
-                margin="normal"
-            />           
-            <Button variant="contained" onClick={handleSave} sx={{ mt: 2 }}>
-                Save Model
-            </Button>
-        </Box>
+            <button onClick={handleAddNewModel}>Add New Model</button>
+        </div>
     );
 };
 

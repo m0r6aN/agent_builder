@@ -4,8 +4,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import useApi from '../../hooks/useApi';
 import useProcessManager from '../../hooks/useProcessManager';
 
-const ProcessManager = () => {
-    const baseURL = process.env.DB_API_BASE_URL;
+const ProcessManager = ({ processData, setProcessData }) => {
+    const baseURL = process.env.REACT_APP_DB_API_BASE_URL;
     const { data: agents, error: agentsError, isLoading: agentsLoading } = useApi(`${baseURL}/agents`);
     const { data: processes, error: processesError, fetchData: fetchProcesses, isLoading: processesLoading } = useApi(`${baseURL}/processes`);
     const { processName, setProcessName, processAgents, handleAddAgent, handleSaveProcess, handleDeleteProcess } = useProcessManager([]);
@@ -14,6 +14,13 @@ const ProcessManager = () => {
     const [task, setTask] = useState('');
 
     const [errorMessage, setErrorMessage] = useState(null);
+
+    useEffect(() => {
+        if (processData) {
+            setProcessName(processData.processName);
+            // Set other process-specific data as needed
+        }
+    }, [processData, setProcessName]);
 
     useEffect(() => {
         if (agentsError) setErrorMessage(`Error loading agents: ${agentsError.message}`);
@@ -36,6 +43,15 @@ const ProcessManager = () => {
         if (newProcess) {
             fetchProcesses();  // Refresh process list
         }
+    };
+
+    const saveData = () => {
+        const newData = {
+            processName,
+            processAgents,
+        };
+        setProcessData(newData);
+        handleSaveNewProcess();
     };
 
     if (agentsLoading || processesLoading) return <CircularProgress />;
@@ -89,7 +105,7 @@ const ProcessManager = () => {
                     </Typography>
                 ))}
             </Box>
-            <Button variant="contained" onClick={handleSaveNewProcess} sx={{ mt: 2 }}>
+            <Button variant="contained" onClick={saveData} sx={{ mt: 2 }}>
                 Save Process
             </Button>
             <Box sx={{ mt: 2 }}>

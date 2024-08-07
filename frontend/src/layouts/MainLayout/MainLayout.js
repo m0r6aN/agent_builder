@@ -1,3 +1,4 @@
+// src/layouts/MainLayout/MainLayout.js
 import React from 'react';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import theme from '../../assets/styles/theme';

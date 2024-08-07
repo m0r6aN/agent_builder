@@ -1,3 +1,4 @@
+// frontend\src\App.js
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout/MainLayout';
@@ -9,7 +10,7 @@ import ToolManager from './components/Tool/ToolManager';
 import TaskManager from './components/Task/TaskManager';
 import ModelManager from './components/Model/ModelManager';
 import './assets/styles/App.css';
-import RequestManager from './components/Requests/RequestManager';
+import RequestManager from './components/Request/RequestManager';
 
 const App = () => (
   <Router>

@@ -3,62 +3,23 @@
 ## Description
 SynthetIQ is a flexible and extensible framework designed for creating, managing, and testing AI agents. These agents can perform various tasks, such as web scraping, research, and content creation, utilizing different tools like Google Search and Wikipedia Search. SynthetIQ allows users to define agents using prompts, assign them tools, and manage their configurations. The project supports persistence through local storage, making it easy to save and retrieve agent configurations.
 
-## Project Structure and Brief Component Descriptions
-
-
-
-```
-/SynthetIQ
-|-- /public
-|-- /src
-|   |-- /components
-|   |   |-- AppBar
-|   |   |   |-- AppBar.js       # The top navigation bar component.
-|   |   |-- Drawer
-|   |   |   |-- Drawer.js       # Side navigation drawer with links.
-|   |   |-- Main
-|   |   |   |-- Main.js         # Main content area component.
-|   |   |-- AgentManager
-|   |   |   |-- AgentManager.js # Main component for creating and managing AI agents.
-|   |   |-- AgentTester
-|   |   |   |-- AgentTester.js  # Component for testing AI agents with generated code.
-|   |   |-- ModelManager
-|   |   |   |-- ModelManager.js # Component for managing AI models and their API endpoints.
-|   |-- /layouts
-|   |   |-- MainLayout
-|   |       |-- MainLayout.js   # Main layout component that includes AppBar, Drawer, and Main.
-|   |-- /pages
-|   |   |-- Home.js             # Home page component.
-|   |   |-- About.js            # About page component.
-|   |   |-- Agents.js           # Agents page component.
-|   |   |-- Tasks.js            # Tasks page component.
-|   |   |-- Prompts.js          # Prompts page component.
-|   |   |-- Tools.js            # Tools page component.
-|   |   |-- Tester.js           # Tester page component (can be integrated within AgentTester).
-|   |-- /assets
-|   |   |-- /styles
-|   |       |-- theme.js        # Theme configuration for MUI.
-|   |       |-- App.css         # Global CSS styles.
-|   |-- App.js                  # Main application component with routing.
-|   |-- index.js                # Entry point of the React application.
-|-- package.json
-
-```
-
 ## Usage Instructions
 
 ### Setup
 #### 1. Clone the repository:
-```
+
+```sh
 git clone <repository-url>
 cd SynthetIQ
 ```
 #### 2. Install dependencies:
-```
+
+```sh
 npm install
 ```
+
 #### 3. Run the application:
-```
+```sh
 npm start
 ```
 
@@ -117,6 +78,8 @@ These are individual entities that perform specific tasks within a Process. Agen
 These are specific actions or responsibilities that Agents need to perform. An Agent might be assigned several Tasks within a Process.
 
 ### So in practice:
+
+A Process refers to a structured workflow comprising various agents and tasks aimed at achieving a specific goal. It includes defining the process name and type, configuring agents (pre-defined or custom), specifying tasks and their configurations, assigning agents to tasks, and orchestrating their execution. The process also involves setting up error handling, generating the necessary code, and providing deployment instructions. Essentially, it is a comprehensive plan that outlines the steps and components required to perform a complex operation or series of operations within the system.
 
 * A Process involves multiple Agents working together.
 * An Agent can be involved in one or more Processes.
@@ -242,231 +205,4 @@ def scrape_web_content():
 
 if __name__ == '__main__':
   app.run(debug=True)  # Set debug to False for deployment
-
 ```
-
-### Explanation:
-
-#### Flask App: 
-    We use Flask to create a simple web application with a single API endpoint /scrape.
-
-#### Vertex AI Integration:
-    We import the vertex_ai library to interact with Vertex AI.
-    Replace placeholders with your project ID, region, and model ID.
-    The call_vertex_ai function constructs the request and retrieves the generated text from Vertex AI.
-
-#### API Endpoint:
-    The /scrape endpoint expects a JSON request containing a "url" field.
-    It calls the call_vertex_ai function to generate the scraped content.
-    The response includes the scraped content or an error message if scraping fails.
-
-#### Deployment:
-    You can deploy this Flask app as a Cloud Function for easy integration with Google Cloud.
-    Set the debug flag to False before deploying.
-    Further Considerations:
-
-#### Error Handling: 
-    Implement more robust error handling for model calls and potential scraping issues.
-
-#### Security: 
-    Consider adding authentication and authorization mechanisms for your API endpoint.
-
-#### External Libraries: 
-    Explore libraries like beautifulsoup4 for actual web scraping if Vertex AI's output requires further processing.
-    This example demonstrates a basic framework for a web scraping agent. You can customize it further to handle different scraping scenarios and integrate with other Cloud services!
-
-----------------------------------
-
-## API Endpoint Types
-
-### Completions
-- **Description**: Generates text based on a given prompt.
-- **Usage**: Often used for single-turn tasks like writing, coding, or generating a paragraph of text.
-- **Endpoint**: `/v1/completions`
-
-### Chat Completions
-- **Description**: Facilitates multi-turn conversations and interactions.
-- **Usage**: Designed for interactive and dynamic exchanges, such as a chatbot or conversational agent.
-- **Endpoint**: `/v1/chat/completions`
-
-### Edits
-- **Description**: Edits and modifies existing text based on a given instruction.
-- **Usage**: Useful for refining or correcting text.
-- **Endpoint**: `/v1/edits`
-
-### Embeddings
-- **Description**: Generates vector representations of text.
-- **Usage**: Often used in search, recommendation systems, and other applications requiring semantic understanding.
-- **Endpoint**: `/v1/embeddings`
-
-### Moderation
-- **Description**: Analyzes content for harmful or inappropriate material.
-- **Usage**: Used to ensure content complies with guidelines and policies.
-- **Endpoint**: `/v1/moderation`
-
-### Image Generation
-- **Description**: Generates images based on a given prompt.
-- **Usage**: Useful for creating visual content from textual descriptions.
-- **Endpoint**: `/v1/images/generate`
-
-### Image Editing
-- **Description**: Edits existing images based on instructions.
-- **Usage**: Used to modify or enhance images.
-- **Endpoint**: `/v1/images/edit`
-
-### Image Variations
-- **Description**: Generates variations of a given image.
-- **Usage**: Useful for creating different versions of an image.
-- **Endpoint**: `/v1/images/variations`
-
-### Video Generation
-- **Description**: Generates videos based on a given prompt.
-- **Usage**: Useful for creating video content from textual descriptions.
-- **Endpoint**: `/v1/videos/generate`
-
-### Video Editing
-- **Description**: Edits existing videos based on instructions.
-- **Usage**: Used to modify or enhance video content.
-- **Endpoint**: `/v1/videos/edit`
-
-### Audio Transcription
-- **Description**: Converts spoken audio into text.
-- **Usage**: Useful for creating text transcripts of audio content.
-- **Endpoint**: `/v1/audio/transcribe`
-
-### Audio Translation
-- **Description**: Translates spoken audio from one language to another.
-- **Usage**: Useful for translating audio content.
-- **Endpoint**: `/v1/audio/translate`
-
-### Research
-- **Description**: Provides research capabilities and insights.
-- **Usage**: Used for conducting research and gathering information.
-- **Endpoint**: `/v1/research`
-
-### Orchestration
-- **Description**: Manages and coordinates multiple processes or tasks.
-- **Usage**: Useful for workflow management and automation.
-- **Endpoint**: `/v1/orchestration`
-
-### Data Analysis
-- **Description**: Analyzes data to extract insights and patterns.
-- **Usage**: Used for processing and interpreting data.
-- **Endpoint**: `/v1/data/analysis`
-
-### Recommendation
-- **Description**: Provides personalized recommendations based on data.
-- **Usage**: Useful for recommendation engines and personalized content.
-- **Endpoint**: `/v1/recommendation`
-
-### Search
-- **Description**: Performs searches to retrieve relevant information.
-- **Usage**: Used for search engines and information retrieval.
-- **Endpoint**: `/v1/search`
-
-### Sentiment Analysis
-- **Description**: Analyzes text to determine sentiment.
-- **Usage**: Useful for understanding the emotional tone of content.
-- **Endpoint**: `/v1/sentiment`
-
-### Speech Synthesis
-- **Description**: Converts text into spoken audio.
-- **Usage**: Useful for generating synthetic speech.
-- **Endpoint**: `/v1/speech/synthesize`
-
-### Text to Speech
-- **Description**: Converts text into speech.
-- **Usage**: Used for creating audio from textual content.
-- **Endpoint**: `/v1/text-to-speech`
-
-### Speech to Text
-- **Description**: Converts spoken audio into text.
-- **Usage**: Used for transcribing spoken language.
-- **Endpoint**: `/v1/speech-to-text`
-
-### Language Detection
-- **Description**: Detects the language of a given text.
-- **Usage**: Useful for identifying the language of content.
-- **Endpoint**: `/v1/language/detect`
-
-### Text Summarization
-- **Description**: Summarizes long text into shorter, concise versions.
-- **Usage**: Useful for creating summaries of documents and articles.
-- **Endpoint**: `/v1/summarization`
-
-### Translation
-- **Description**: Translates text from one language to another.
-- **Usage**: Useful for translating written content.
-- **Endpoint**: `/v1/translation`
-
-### Task Automation
-- **Description**: Automates tasks and processes.
-- **Usage**: Used for workflow automation and task management.
-- **Endpoint**: `/v1/task/automation`
-
-### Knowledge Base
-- **Description**: Provides access to a repository of knowledge and information.
-- **Usage**: Useful for querying and retrieving information from a knowledge base.
-- **Endpoint**: `/v1/knowledge-base`
-
-Key Features and Goals
-Super Fast Process Design and Development: Enable rapid creation and deployment of AI agents.
-Mitigation of REST APIs and SaaS Endpoints: Leverage modularity to reduce redundancy and complexity.
-Lower Latency and Cost: Utilize efficient models and optimized infrastructure.
-Flexibility, Modularity, and Scalability: Ensure the system can adapt and grow seamlessly.
-Consistency, Quality, and Cost Reduction: Focus on delivering high-quality outputs at a reduced cost.
-
- 
-Application Solution Design
-----------------------------
-1. React frontend
-2. Node backend
-   - SQL Lite database
-3. Olama - for running local models
-4. GCP - Vertex AI, Gemini, Gemma 2 2B
-5. GPT4o mini, Microsoft Phi-3 mini, Llama 3.1 405b, Claude 200k
-6. Use one or more of these algorithmic unlocks (agentic frameworks)
-	- Chain of thought (CoT)
-	- Mixture of agents
-	- CrewAI
-	- etc...
-7. Uses RouteLLM with classifier model to choose routes
-8. Built-in benchmarking to optimize response consistency
-9. Built-in caching to optimize speed, cost, and consistency
- 
-
- Base Design and Default Models
- ------------------------------
-1. Solution Designer 
-	- Given a prompt, this agent is responsible for architecting processes. 
-	- It should begin by defining a step-by-step list of tasks needed to serve the demands of a process, including error handling, alerting, orchestration, and scaling.
-	- It should always include the default agents. For additional agents, it should utilize the backend server to search the database for suitable agents.
-	- For any unmet needs, it should suggest agents including their name, description, system message, and default prompt.
-	- Will provide a step-by-step process definition that includes the goals and all included agents.
-	- The solution designer should also specify which tasks are candidates for parallel processing in lieu of sequential and which might benefit from elastic scaling.
-	
-2. Default Process Agents
-	- Orchestrator: Using the step-by-step process definition created by the Solution Designer, the orchestrator agent will intelligently call the process agents.
-		A single drop-in API endpoint that connects to multiple LLMs and gives the cheapest, fastest, highest quality response on a per prompt basis (Credit: Matthew Berman). 
-		Uses something like RouteLLM to determine which LLM should be used, which algorithm should be used, and the order of operations, by determinig which will
-		be cheapest, fastest, and highest quality on a per prompt basis.
-		90% of GPT4o quality at 80% o
-		
-	- Resource Monitor: The resource monitoring agent will monitors the resources utilized by the processes to determine if scaling should be performed.
-	- Logging: The logging agent is responsible for taking messages from all other agents and logging them to the database via the Node backend server.
-	- RAG: The RAG agent is responsible for performing RAG operations using provided tools such as Google search, Wiki search, PDF parsing, etc.
-
-Tools
------------
-This enables a model to answer a given prompt using tool(s) it knows about, making it possible for models to perform more complex tasks or interact with the outside world.
-1. Functions and APIs
-2. Web browsing
-3. Code interpreter
-4. Calculators
-5. File parsers
-5. much, much, more...
-	
- 
- Wizard Steps
- --------------
- The React website will provide a Wizard for creating processes from start to finish. The order of operations is currently undecided.

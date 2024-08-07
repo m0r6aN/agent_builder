@@ -12,7 +12,7 @@ const PromptOptimizer = () => {
         setLoading(true);
         try {
             // Replace '/api/optimizePrompt' with the actual endpoint for optimizing prompts
-            const response = await axios.post('/api/optimizePrompt', { promptText });
+            const response = await axios.post(`${process.env.DB_API_BASE_URL}/optimizePrompt`, { promptText });
             setOptimizedPrompt(response.data.optimizedPrompt);
         } catch (error) {
             console.error('Error optimizing prompt', error);
@@ -21,7 +21,7 @@ const PromptOptimizer = () => {
     };
 
     return (
-        <Box sx={{ p: 3 }}>           
+        <Box sx={{ p: 3 }}>
             <TextField
                 label="Prompt Name"
                 value={promptName}

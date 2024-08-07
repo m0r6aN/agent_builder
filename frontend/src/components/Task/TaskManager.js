@@ -1,23 +1,27 @@
-// TaskManager.js
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
+import React from 'react';
+import { Box, Button, TextField, Typography, List, ListItem, ListItemText, IconButton, CircularProgress, Alert, AlertTitle } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import useFetchData from '../../hooks/useFetchData';
-import useCrudOperations from '../../hooks/useCrudOperations';
+import useTaskManager from '../../hooks/useTaskManager';
 
 const TaskManager = () => {
-    const baseURL = process.env.DB_API_BASE_URL;
-    const [taskName, setTaskName] = useState('');
-    const { data: tasks, error } = useFetchData(`${baseURL}/tasks`);
-    const { addItem: addTask, deleteItem: deleteTask } = useCrudOperations(`${baseURL}/tasks`);
+    const baseURL = process.env.DB_API_URL;
+    const {
+        taskName,
+        setTaskName,
+        tasks,
+        error,
+        isLoading,
+        handleAddTask,
+        deleteTask
+    } = useTaskManager(baseURL);
 
-    const handleAddTask = () => {
-        if (taskName.trim() === '') return;
-        addTask({ name: taskName });
-        setTaskName('');
-    };
-
-    if (error) return <p>Error fetching tasks: {error.message}</p>;
+    if (isLoading) return <CircularProgress />;
+    if (error) return (
+        <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            {error.message}
+        </Alert>
+    );
 
     return (
         <Box sx={{ p: 3 }}>

@@ -1,112 +1,98 @@
-import React, { useState, useEffect } from 'react';
-import { Box, Button, TextField, MenuItem, Typography, TextareaAutosize, Select, InputLabel, FormControl, Checkbox, ListItemText } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, Button, TextField, Typography, MenuItem, FormControl, Select, InputLabel, Checkbox, ListItemText, TextareaAutosize } from '@mui/material';
 import AgentTester from './AgentTester';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import CodeDisplay from '../Form/CodeDisplay';
-import useCodeGeneration from '../hooks/useCodeGeneration';
+import useCodeGeneration from '../../hooks/useCodeGeneration';
+import useAgentManager from '../../hooks/useAgentManager';
 
-const AgentManager = () => {
-    const [agentName, setAgentName] = useState('');
-    const [description, setDescription] = useState('');
-    const [modelId, setModelId] = useState('');
-    const [models, setModels] = useState([]);
-    const [defaultPrompt, setDefaultPrompt] = useState('');
-    const [systemMessage, setSystemMessage] = useState('');
-    const [maxTurns, setMaxTurns] = useState(5);
-    const [temperature, setTemperature] = useState(0.7);
-    const [topP, setTopP] = useState(0.9);
-    const [tools, setTools] = useState([]);
-    const [selectedTool, setSelectedTool] = useState('');
-    const [samplePrompts, setSamplePrompts] = useState('');
-    const [agents, setAgents] = useState([]);
-    const [showTester, setShowTester] = useState(false);
-    const [tasks, setTasks] = useState([]);
-    const [selectedTasks, setSelectedTasks] = useState([]);
+const AgentManager = ({ agentsData, setAgentsData }) => {
+    const {
+        agentName,
+        setAgentName,
+        description,
+        setDescription,
+        modelId,
+        setModelId,
+        models,
+        setModels,
+        defaultPrompt,
+        setDefaultPrompt,
+        systemMessage,
+        setSystemMessage,
+        maxTurns,
+        setMaxTurns,
+        temperature,
+        setTemperature,
+        topP,
+        setTopP,
+        tools,
+        setTools,
+        selectedTool,
+        setSelectedTool,
+        samplePrompts,
+        setSamplePrompts,
+        agents,
+        setAgents,
+        showTester,
+        setShowTester,
+        tasks,
+        setTasks,
+        selectedTasks,
+        setSelectedTasks,
+        handleSave,
+        handleClear,
+        handleGenerate,
+        handleTest,
+        handleAddTool,
+    } = useAgentManager();
 
     const { generatedCode, generateCode } = useCodeGeneration();
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                // Fetch models
-                const modelResponse = await axios.get('/api/models');
-                setModels(modelResponse.data);
+        if (agentsData) {
+            setAgentName(agentsData.agentName);
+            setDescription(agentsData.description);
+            setModelId(agentsData.modelId);
+            setModels(agentsData.models);
+            setDefaultPrompt(agentsData.defaultPrompt);
+            setSystemMessage(agentsData.systemMessage);
+            setMaxTurns(agentsData.maxTurns);
+            setTemperature(agentsData.temperature);
+            setTopP(agentsData.topP);
+            setTools(agentsData.tools);
+            setSelectedTool(agentsData.selectedTool);
+            setSamplePrompts(agentsData.samplePrompts);
+            setAgents(agentsData.agents);
+            setShowTester(agentsData.showTester);
+            setTasks(agentsData.tasks);
+            setSelectedTasks(agentsData.selectedTasks);
+        }
+    }, [agentsData, setAgentName, setDescription, setModelId, setModels, setDefaultPrompt, setSystemMessage, setMaxTurns, setTemperature, setTopP, setTools, setSelectedTool, setSamplePrompts, setAgents, setShowTester, setTasks, setSelectedTasks]);
 
-                // Fetch tasks
-                const tasksResponse = await axios.get('/api/tasks');
-                setTasks(tasksResponse.data);
-
-                // Load saved agents from localStorage
-                const storedAgents = JSON.parse(localStorage.getItem('agents')) || [];
-                setAgents(storedAgents);
-            } catch (error) {
-                console.error('Error fetching data', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
-    const handleSave = () => {
-        const newAgent = {
+    const saveData = () => {
+        const newData = {
             agentName,
             description,
             modelId,
+            models,
             defaultPrompt,
             systemMessage,
             maxTurns,
             temperature,
             topP,
             tools,
-            tasks: selectedTasks,
+            selectedTool,
             samplePrompts,
-            generatedCode
+            agents,
+            showTester,
+            tasks,
+            selectedTasks,
         };
-        const updatedAgents = [...agents, newAgent];
-        setAgents(updatedAgents);
-        localStorage.setItem('agents', JSON.stringify(updatedAgents));
-        console.log('Agent saved');
+        setAgentsData(newData);
+        handleSave();
     };
-
-    const handleClear = () => {
-        setAgentName('');
-        setDescription('');
-        setModelId('');
-        setDefaultPrompt('');
-        setSystemMessage('');
-        setMaxTurns(5);
-        setTemperature(0.7);
-        setTopP(0.9);
-        setTools([]);
-        setSamplePrompts('');
-        setSelectedTasks([]);
-        setShowTester(false);
-    };
-
-    const handleGenerate = () => {
-        const apiKey = process.env.REACT_APP_OPENAI_API_KEY; // OpenAI API key from environment variable
-        const projectId = process.env.REACT_APP_VERTEX_AI_PROJECT_ID; // Vertex AI Project ID
-        const region = process.env.REACT_APP_VERTEX_AI_REGION; // Vertex AI region
-        const provider = process.env.REACT_APP_PROVIDER; // 'OpenAI' or 'VertexAI'
-
-        generateCode(modelId, apiKey, projectId, region, provider);
-    };
-
-    const handleTest = () => {
-        setShowTester(true);
-    };
-
-    const handleAddTool = () => {
-        if (selectedTool && !tools.includes(selectedTool)) {
-            setTools([...tools, selectedTool]);
-            setSelectedTool('');
-        }
-    };
-
-    const toolOptions = ['GoogleSearchTool', 'WikipediaSearchTool', 'CalculatorTool'];
 
     return (
         <Box sx={{ p: 3 }}>
@@ -236,7 +222,7 @@ const AgentManager = () => {
                 <Button variant="contained" onClick={handleGenerate} sx={{ mr: 1 }}>
                     Generate
                 </Button>
-                <Button variant="contained" onClick={handleSave} sx={{ mr: 1 }}>
+                <Button variant="contained" onClick={saveData} sx={{ mr: 1 }}>
                     Save
                 </Button>
                 <Button variant="contained" onClick={handleClear} sx={{ mr: 1 }}>

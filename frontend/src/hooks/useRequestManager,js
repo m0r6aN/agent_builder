@@ -1,0 +1,21 @@
+import { useState } from 'react';
+import { Endpoint } from '../types';
+
+const useRequestManager = () => {
+    const [endpoints, setEndpoints] = useState<Endpoint[]>([]);
+    const [newEndpoint, setNewEndpoint] = useState<Endpoint>({ name: '', url: '', method: 'GET', category: 'Analysis' });
+
+    const addEndpoint = () => {
+        setEndpoints([...endpoints, newEndpoint]);
+        setNewEndpoint({ name: '', url: '', method: 'GET', category: 'Analysis' });
+    };
+
+    return {
+        endpoints,
+        newEndpoint,
+        setNewEndpoint,
+        addEndpoint
+    };
+};
+
+export default useRequestManager;

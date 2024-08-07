@@ -1,24 +1,45 @@
-// ToolManager.js
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, IconButton } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, Button, TextField, Typography, IconButton, CircularProgress, Alert, AlertTitle } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import useFetchData from '../../hooks/useFetchData';
-import useCrudOperations from '../../hooks/useCrudOperations';
+import useToolManager from '../../hooks/useToolManager';
 
-const ToolManager = () => {
-    const baseURL = process.env.DB_API_BASE_URL;
-    const [toolName, setToolName] = useState('');
-    const [toolDescription, setToolDescription] = useState('');
-    const { data: tools, error } = useFetchData(`${baseURL}/tools`);
-    const { addItem: addTool, deleteItem: deleteTool } = useCrudOperations(`${baseURL}/tools`);
+const ToolManager = ({ toolsData, setToolsData }) => {
+    const baseURL = process.env.REACT_APP_DB_API_BASE_URL;
+    const {
+        toolName,
+        setToolName,
+        toolDescription,
+        setToolDescription,
+        tools,
+        error,
+        isLoading,
+        handleSaveTool,
+        deleteTool
+    } = useToolManager(baseURL);
 
-    const handleSaveTool = () => {
-        addTool({ toolName, toolDescription });
-        setToolName('');
-        setToolDescription('');
+    useEffect(() => {
+        if (toolsData) {
+            setToolName(toolsData.toolName);
+            setToolDescription(toolsData.toolDescription);
+        }
+    }, [toolsData, setToolName, setToolDescription]);
+
+    const saveData = () => {
+        const newData = {
+            toolName,
+            toolDescription,
+        };
+        setToolsData(newData);
+        handleSaveTool();
     };
 
-    if (error) return <p>Error fetching tools: {error.message}</p>;
+    if (isLoading) return <CircularProgress />;
+    if (error) return (
+        <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            {error.message}
+        </Alert>
+    );
 
     return (
         <Box sx={{ p: 3 }}>
@@ -37,7 +58,7 @@ const ToolManager = () => {
                 fullWidth
                 margin="normal"
             />
-            <Button variant="contained" onClick={handleSaveTool} sx={{ mt: 2 }}>
+            <Button variant="contained" onClick={saveData} sx={{ mt: 2 }}>
                 Save Tool
             </Button>
             <Box sx={{ mt: 2 }}>

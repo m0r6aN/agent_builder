@@ -15,6 +15,10 @@ const steps = [
 
 const Wizard = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [modelData, setModelData] = useState(null);
+  const [agentsData, setAgentsData] = useState([]);
+  const [tasksData, setTasksData] = useState([]);
+  const [processData, setProcessData] = useState(null);
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -26,18 +30,22 @@ const Wizard = () => {
 
   const handleReset = () => {
     setActiveStep(0);
+    setModelData(null);
+    setAgentsData([]);
+    setTasksData([]);
+    setProcessData(null);
   };
 
   const getStepContent = (step) => {
     switch (step) {
       case 0:
-        return <ModelManager />;
+        return <ModelManager modelData={modelData} setModelData={setModelData} />;
       case 1:
-        return <AgentManager />;
+        return <AgentManager agentsData={agentsData} setAgentsData={setAgentsData} />;
       case 2:
-        return <TaskManager />;
+        return <TaskManager tasksData={tasksData} setTasksData={setTasksData} />;
       case 3:
-        return <ProcessManager />;
+        return <ProcessManager processData={processData} setProcessData={setProcessData} />;
       case 4:
         return <Typography>All steps completed - you can now export your application!</Typography>;
       default:
